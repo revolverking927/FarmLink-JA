@@ -28,26 +28,12 @@ if (firstname == null && lastname == null) { //means login page is open
         })
         .then(res => res.json())
         .then(data => {
-            validateData(data);
+            validateData(data, 'login');
         })
     })
 } else { //means register page is open
 
-    buyerBtn.addEventListener('click', () => {//when buyer button is clicked
-        if (currRole === 'farmer') {
-            // license.setAttribute('hidden', true);
-        }
-        currRole = 'buyer';
-    });
-
-    farmerBtn.addEventListener('click', () => {//when farmer button is clicked
-        if (currRole === 'buyer') {
-            // license.removeAttribute('hidden');
-        }
-        currRole = 'farmer';
-    });
-
-    submitBtn.addEventListener('click', () => {//form submission button
+     submitBtn.addEventListener('click', () => {//form submission button
         fetch('/register-user', { //used to submit the form
             method: 'post',
             headers: new Headers({'Content-Type': 'application/json'}),
@@ -65,6 +51,20 @@ if (firstname == null && lastname == null) { //means login page is open
             validateData(data);
         })
     })
+
+    buyerBtn.addEventListener('click', () => {//when buyer button is clicked
+        if (currRole === 'farmer') {
+            // license.setAttribute('hidden', true);
+        }
+        currRole = 'buyer';
+    });
+
+    farmerBtn.addEventListener('click', () => {//when farmer button is clicked
+        if (currRole === 'buyer') {
+            // license.removeAttribute('hidden');
+        }
+        currRole = 'farmer';
+    });
 }
 
 const alertBox = (data) => {
@@ -78,13 +78,18 @@ const alertBox = (data) => {
     }, 5000);
 }
 
-const validateData = (data) => {
+const validateData = (data, currentPage) => {
     if(!data.firstname) {
         alertBox(data);
     } else {
         sessionStorage.name = data.name;
         sessionStorage.email = data.email;
-        location.href = '/'
+        if (currentPage === 'login') {
+            location.href = '/profile.html';
+        } else {
+            location.href = '/';
+        }
+        
     }
 }
 

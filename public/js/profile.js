@@ -1,0 +1,33 @@
+const email = sessionStorage.email; // from login
+
+if (email === undefined) { //first check on reload
+    location.href = '/login';
+} else {
+    fetch(`/current-user?email=${encodeURIComponent(email)}`)//fetches the user information
+    .then(res => res.json())
+    .then(user => {
+        console.log("Current user info:", user);
+        if (!user.firstname) {//if there is no user information, redirect to login
+            location.href = '/login';
+        } else { //loads the data
+            setUserInfo(user); 
+        }
+    })
+    .catch(err => console.error(err))   
+}
+
+const initials = document.querySelector('.initials');
+const username = document.querySelector('.username');
+const logout = document.querySelector('.logout');
+
+const setUserInfo = (user) => {
+    initials.innerHTML = getInitials(user.firstname, user.lastname).toUpperCase();
+    username.innerHTML = user.firstname + ' ' + user.lastname;
+}
+
+const getInitials = (firstname, lastname) => firstname[0] + lastname[0];
+
+logout.addEventListener('click', () => {
+    sessionStorage.clear();
+    location.reload();
+}) 

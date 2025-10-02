@@ -86,6 +86,18 @@ app.post('/login-user', (req, res) => {
      })
 })
 
+app.get('/current-user', (req, res) => {
+    const email = req.query.email; // or read from session
+    if (!email) return res.status(400).json({error: "No email provided"});
+
+    db("users").where({email}).first()
+    .then(user => {
+        if (!user) return res.status(404).json({error: "User not found"});
+        res.json(user); // send user data
+    })
+    .catch(err => res.status(500).json({error: "Database error"}));
+})
+
 app.listen(3000, (req, res) => {
     console.log('listening on port 3000.......')
 })
