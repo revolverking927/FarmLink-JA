@@ -8,35 +8,35 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="./styles/alert.css">
     </head>
     <body>
         <header>
             <h4 id="logo">Farm Link JA</h4>
             <nav id="nav_bar">
                 <ul id="nav-li">
-                    <li class="nav-li-item"><a href="./">Home</a></li>
+                    <li class="nav-li-item"><a href="./index.html">Home</a></li>
                     <li class="nav-li-item"><a href="./marketplace.html">Marketplace</a></li>
                 </ul>
             </nav>
         </header>
         <main>
-            <div class="alert">
-                <button type="button" class="alert-close" href=""#>X</button>
-                <h3 class="alert-messgae">Hello</h3>
+            <div class="alert-box">
+                <h3 class="alert-message">Alert</h3>
             </div>
             <form class="login-form">
                 <h1>Login</h1>
-                <h3>Create an account</h3>
 
-                <label for="name">Enter your name</label>
-                <input type="text" id="name" name="name" />
+                <input type="email" placeholder="Email" class="input" id="email" name="email" required/>
                 <br/>
-                <label for="password">Enter your password</label>
-                <input type="text" id="password" name="password" />
+                <input type="password" placeholder="Password" class="input" id="password" name="password" required/>
                 <br/>
-                <input type="submit" value="Submit"/>
+                <button type="button" id="submit-btn">register</button>
             </form>
+            <div class="register">
+                <p><a class="register-link" href="./register.html">Dont have an account? Register here</a></p>
+            </div>
         </main>
-        
+        <script src="./js/user-form.js"></script>
     </body>
 </html>
