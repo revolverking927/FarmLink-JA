@@ -28,7 +28,13 @@ if (firstname == null && lastname == null) { //means login page is open
         })
         .then(res => res.json())
         .then(data => {
-            validateData(data, 'login');
+           // if (data.token) {
+           //     localStorage.setItem('token', data.token);
+                validateData(data, 'login');
+          //  } else {
+
+           // }
+            
         })
     })
 } else { //means register page is open
@@ -79,16 +85,17 @@ const alertBox = (data) => {
 }
 
 const validateData = (data, currentPage) => {
-    if(!data.firstname) {
-        alertBox(data);
+    if(!data.userData.firstname || !data.token) {
+        alertBox(data.userData);
     } else {
-        sessionStorage.name = data.name;
-        sessionStorage.email = data.email;
-        if (currentPage === 'login') {
+        sessionStorage.name = data.userData.name;
+        sessionStorage.email = data.userData.email;
+        localStorage.setItem('token', data.token);
+        // if (currentPage === 'login') {
             location.href = '/profile.html';
-        } else {
-            location.href = '/';
-        }
+        // } else {
+        //     location.href = '/';
+        // }
         
     }
 }

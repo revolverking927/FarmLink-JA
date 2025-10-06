@@ -19,10 +19,34 @@ if (email === undefined) { //first check on reload
 const initials = document.querySelector('.initials');
 const username = document.querySelector('.username');
 const logout = document.querySelector('.logout');
+const navigationLinks = document.querySelector('#nav-li');
 
 const setUserInfo = (user) => {
     initials.innerHTML = getInitials(user.firstname, user.lastname).toUpperCase();
     username.innerHTML = user.firstname + ' ' + user.lastname;
+
+    //creating a navigation based on the users role
+    if (user.role === 'farmer') {
+        const farmerHub_li = document.createElement('li');
+        farmerHub_li.setAttribute('class', 'nav-li-item');
+
+        const farmerHub_a = document.createElement('a');
+        farmerHub_a.textContent = 'Farmer Hub';
+        farmerHub_a.setAttribute('href', './farmer-hub.html');
+
+        farmerHub_li.appendChild(farmerHub_a);
+        navigationLinks.appendChild(farmerHub_li);
+    } else if (user.role === 'buyer') {
+        const farmerHub_li = document.createElement('li');
+        farmerHub_li.setAttribute('class', 'nav-li-item');
+
+        const farmerHub_a = document.createElement('a');
+        farmerHub_a.textContent = 'Buyer Hub';
+        farmerHub_a.setAttribute('href', './buyer-hub.html');
+
+        farmerHub_li.appendChild(farmerHub_a);
+        navigationLinks.appendChild(farmerHub_li);
+    }
 }
 
 const getInitials = (firstname, lastname) => firstname[0] + lastname[0];

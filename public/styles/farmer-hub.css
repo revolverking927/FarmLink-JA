@@ -1,0 +1,106 @@
+body {
+    background-color: rgb(255, 255, 255);
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    position: sticky;
+    width: 80%;
+    margin: 5% auto 0;
+}
+
+#nav-li {
+    list-style: none;
+    overflow: hidden;
+}
+
+.nav-li-item {
+    float: left;
+}
+
+.nav-li-item a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+
+.post-box {
+    background-color: white;
+    border: 1px, solid, black;
+    padding: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 350px;
+    max-width: 400px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+}
+
+.title-section {
+    margin: 0 5%;
+}
+#title {
+    border: 0;
+    margin: 2.5% 0 2.5%;
+}
+
+.content-section {
+    min-height: 250px;
+    margin: 0 5%;
+}
+
+#content {
+    border: 0;
+    min-height: 200px;
+    width: 100%;
+    resize: none;
+    margin: 2.5% 0 2.5%;
+}
+
+#image {
+    margin: 2.5% 0 2.5%;
+}
+.post-section {
+    flex-wrap: wrap;
+    flex-direction: row;
+    margin: 2.5% 0 2.5%;
+}
+
+#price {
+    max-width: 20%;
+}
+
+.main-section {
+    flex-flow: row wrap;
+    justify-content: space-around;
+    display: flex;
+}
+
+.sidebar-holder {
+    background-color: rgb(233, 233, 233);
+    width: 35%;
+    height: 500px;
+}
+
+.sidebar-menu {
+    list-style: none;
+}
+
+.sidebar-li {
+    margin: 5% 0 5%;
+}
+
+.post-holder {
+    background-color: rgb(233, 233, 233);
+    width: 55%;
+    height: 500px;
+}

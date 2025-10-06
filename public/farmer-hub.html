@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Farm Link JA</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./styles/farmer-hub.css">
+        <link rel="stylesheet" href="./styles/alert.css">
+
+        <!-- new post source template -->
+        <script id="new-post" type="text-/x-handlebars-template">
+            
+        </script>
+    </head>
+    <body>
+        <header>
+            <h4 id="logo">Farm Link JA</h4>
+            <nav id="nav_bar">
+                <ul id="nav-li">
+                    <li class="nav-li-item"><a href="./index.html">Home</a></li>
+                    <li class="nav-li-item"><a href="./login.html">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="alert-box">
+                <h3 class="alert-message">Alert</h3>
+            </div>
+            <form class="post-box">
+                <div class="title-section">
+                    <label for="title">Title: </label>
+                    <input id="title" name="title" type="text" placeholder="Add title" required />
+                </div>
+                <div class="content-section">
+                    <textarea id="content" name="content" type="text" placeholder="Add content..."></textarea>
+                    <br />
+                    <label for="image">Image</label>
+                    <input id="image" name="image" type="file" placeholder="Add-file" title="Add file" />
+                </div>
+                <div class="post-section">
+                    <input id="price" name="price" type="number" placeholder="Set price" required/>
+                    <select title="product-type" id="product-type" name="product-type" required>
+                        <option value="" disabled selected> --Select the type of product-- </option>
+                        <option value="tomato">Tomato</option>
+                        <option value="onion">Onion</option>
+                        <option value="pepper">Pepper</option>
+                        <option value="beef">Beef</option>
+                        <option value="garlic">Garlic</option>
+                    </select>
+                    <button  class="post-btn" type="submit">Post</button>
+                </div>
+            </form>
+            <section class="main-section">
+                <aside class="sidebar-holder">
+                    <menu class="sidebar-menu">
+                        <li class="sidebar-li">
+                            <button type="button" class="create-post-btn"><h2>CREATE POST</h2></button>
+                        </li>
+                        <li class="sidebar-li">
+                            <div class="search-box">
+                                <div class="row">
+                                    <input type="text" id="input-box" placeholder="Find post" autocomplete="off">
+                                    <button>search</button>
+                                </div>
+                                <div class="result">
+
+                                </div>
+                            </div>
+                        </li>
+                    </menu>
+                </aside>
+                <aside class="post-holder">
+                    <div class="post-container">
+                        <h3 class="post-title">Title</h3>
+                        <div class="post-content-section">
+                            <img class="post-image" src="./images/bananas.webp" title="post media image" />
+                            <p class="post-content" >A banana for sale etc etc</p>
+                        </div>
+                        <div class="post-footer">
+                            <h6 class="post-product-type">Product type: Banana</h6>
+                            <h6 class="post-product-cost">Product cost: $200 per lb</h6>
+                        </div>
+                    </div>
+                </aside>
+            </section>
+            
+        </main>
+        <script type="module" src="./js/farmer-hub.js"></script>
+    </body>
+</html>
