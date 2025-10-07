@@ -1,13 +1,47 @@
-import Handlebars from "handlebars/runtime";
-
 const createPostBtn = document.querySelector('.create-post-btn');
 const postBox = document.querySelector('.post-box');
 const postBtn = document.querySelector('.post-btn');
+const postHolder = document.querySelector('.post-holder');
 
 //post template
+const source = document.querySelector('#new-post').innerHTML; // source code for template
 
 const newPost = (userData, postData) => {
+    const numPosts = postHolder.children.length;
 
+    const data = { // template data for values to be inserted
+        title: postData.title,
+        content: postData.content,
+        product_type: postData.product_type,
+        price: postData.price,
+    }
+
+    //adding the post number to the template
+    if (numPosts === 0) { // first post means postnumber of 1
+        data['post-number'] = "post-1";
+    } else { // new post means number of current posts + 1
+        data['post-number'] = `post-${numPosts - 1}`;
+    }
+    
+    //verifying that there is an image to be added
+    if (postData.image !== "{}") {
+        console.log("has image", postData.image);
+        data['image'] = postData.image;
+    }
+    console.log(postData.image);
+    const template = Handlebars.compile(source); // creating a template from the source
+    const result = template(data); // actual html code
+    
+    const element = document.createRange().createContextualFragment(result);
+
+    if (numPosts === 0) { // first post
+        postHolder.appendChild(element);
+    } else { // new post set before the old one
+        const prePostContainer = document.getElementById(`post-${numPosts}`);
+        postHolder.insertBefore(element, prePostContainer);
+    }
+
+    postBox.style.opacity = 0;
 }
 
 createPostBtn.addEventListener('click', () => {
@@ -44,10 +78,11 @@ postBtn.addEventListener('click', (e) => {
     })
     .then(res => res.json())
     .then(data => {
-        // console.log(data);
-        userData = data.userData;
-        postData = data.postData;
+        //console.log(data);
+        const userData = data.userData;
+        const postData = data.postData;
 
+        newPost(userData, postData);
     });
 })
 

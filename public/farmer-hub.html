@@ -9,10 +9,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./styles/farmer-hub.css">
         <link rel="stylesheet" href="./styles/alert.css">
-
+        <script src="https://s3.amazonaws.com/builds.handlebarsjs.com/handlebars-v4.7.8.js"></script>
         <!-- new post source template -->
-        <script id="new-post" type="text-/x-handlebars-template">
-            
+        <script id="new-post" type="text/x-handlebars-template">
+            <div class="post-container" id={{post-number}}>
+                <h3 class="post-title">{{title}}</h3>
+                <div class="post-content-section">
+                    {{#if image}}
+                    <img class="post-image" src="{{image}}" title="post media image" />
+                    {{/if}}
+                    <p class="post-content" >{{content}}</p>
+                </div>
+                <div class="post-footer">
+                    <h6 class="post-product-type">{{produce_type}}</h6>
+                    <h6 class="post-product-price">{{price}}</h6>
+                </div>
+            </div>
         </script>
     </head>
     <body>
@@ -73,7 +85,7 @@
                     </menu>
                 </aside>
                 <aside class="post-holder">
-                    <div class="post-container">
+                    <div class="post-container" id="post-1" hidden>
                         <h3 class="post-title">Title</h3>
                         <div class="post-content-section">
                             <img class="post-image" src="./images/bananas.webp" title="post media image" />
@@ -81,7 +93,7 @@
                         </div>
                         <div class="post-footer">
                             <h6 class="post-product-type">Product type: Banana</h6>
-                            <h6 class="post-product-cost">Product cost: $200 per lb</h6>
+                            <h6 class="post-product-price">Product cost: $200 per lb</h6>
                         </div>
                     </div>
                 </aside>

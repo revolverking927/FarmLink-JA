@@ -3,7 +3,7 @@ const path = require('path'); //path allow the code to know the files locations
 const bodyParser = require('body-parser'); //body-parser allow the code to send and recieve data
 const knex = require('knex'); //knex will allow the cde to access the database(farmlink)
 const jwt = require('jsonwebtoken');
-const { error } = require('console');
+const multer = require("multer");
 
 const SECRET_KEY = 'super_secret_key';
 
@@ -17,6 +17,11 @@ const db = knex({
     }
 })
 const app = express();
+
+const upload = multer({
+    storage: multer.memoryStorage(), // store file in memory (for DB)
+    limits: { fileSize: 5 * 1024 * 1024}, // max 5mb
+})
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
@@ -132,8 +137,9 @@ app.get('/current-user', (req, res) => {
     .catch(err => res.status(500).json({error: "Database error"}));
 })
 
-app.post('/create-post', verifyToken, (req, res) => {
-    const { title, content, image, price, productType } = req.body;
+app.post('/create-post', verifyToken, upload.single("image"), async (req, res) => {
+    const { title, content, price, productType } = req.body;
+    const imageFile = req.file;
     const user = req.user; //from the token
     console.log(user.userid);
     if (!user) return res.status(400).json({error: "Invalid user"});
@@ -142,10 +148,16 @@ app.post('/create-post', verifyToken, (req, res) => {
     if (!price) return res.status(400).json({error: "No price provided"});
     if (!productType) return res.status(400).json({error: "No product type provided"});
 
-    db("farmer_posts").insert({
+    // Convert file to base64 if you want to store in DB
+    let imageData = null;
+    if (imageFile) {
+      imageData = imageFile.buffer.toString("base64");
+    }
+    console.log(imageFile, imageData);
+    await db("farmer_posts").insert({
         userid: user.id,
         title: title,
-        image: image,
+        image: imageData,
         content: content,
         price: price,
         product_type: productType,
@@ -153,6 +165,7 @@ app.post('/create-post', verifyToken, (req, res) => {
     .returning("*") // returning all the columns in the farmer_posts table of the current row
     .then(data => {
         console.log('success')
+        console.log(imageFile, imageData);
         res.json({postData: data[0], userData: user})
         // res.json(data[0]);
     })
