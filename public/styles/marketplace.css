@@ -1,0 +1,52 @@
+body {
+    background-color: rgb(255, 255, 255);
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    position: sticky;
+    width: 80%;
+    margin: 5% auto 0;
+}
+
+#nav-li {
+    list-style: none;
+    overflow: hidden;
+}
+
+.nav-li-item {
+    float: left;
+}
+
+.nav-li-item a {
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+
+.post-background {
+    width: 100%;
+    overflow-y: scroll;
+}
+
+.post-section {
+    background-color: rgb(233, 233, 233);
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 50%;
+    min-height: 100px;
+}
+
+.post-user-data {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
