@@ -85,6 +85,7 @@ const alertBox = (data) => {
 }
 
 const validateData = (data, currentPage) => {
+    console.log(data);
     if(!data.userData.firstname || !data.token) {
         alertBox(data.userData);
     } else {
@@ -99,4 +100,3 @@ const validateData = (data, currentPage) => {
         
     }
 }
-

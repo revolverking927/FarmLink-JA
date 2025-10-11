@@ -14,6 +14,11 @@
         <script id="new-post" type="text/x-handlebars-template">
             <div class="post-container" id={{post-number}}>
                 <h3 class="post-title">{{title}}</h3>
+                <button type="button" class="post-deleteBtn"><b>DELETE</b></button>
+                <div class="post-user-data">
+                    <h6 class="firstname">{{firstname}}</h6>
+                    <h6 class="lastname">{{lastname}}</h6>
+                </div>
                 <div class="post-content-section">
                     {{#if image}}
                     <img class="post-image" src="{{image}}" title="post media image" />
@@ -21,8 +26,7 @@
                     <p class="post-content" >{{content}}</p>
                 </div>
                 <div class="post-footer">
-                    <h6 class="post-product-type">{{produce_type}}</h6>
-                    <h6 class="post-product-price">{{price}}</h6>
+                    <h6 class="post-product">Price for {{product_type}} is {{price}}</h6>
                 </div>
             </div>
         </script>
@@ -33,7 +37,8 @@
             <nav id="nav_bar">
                 <ul id="nav-li">
                     <li class="nav-li-item"><a href="./index.html">Home</a></li>
-                    <li class="nav-li-item"><a href="./login.html">Login</a></li>
+                    <li class="nav-li-item"><a href="./profile.html">Profile</a></li>
+                    <li class="nav-li-item"><a href="./marketplace.html">Marketplace</a></li>
                 </ul>
             </nav>
         </header>
