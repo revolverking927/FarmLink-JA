@@ -1,71 +1,114 @@
 <!DOCTYPE html>
-
 <html lang="en-us">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Farm Link JA</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="./styles/style.css">
-        <link rel="stylesheet" href="./styles/alert.css">
-    </head>
-    <body>
-        <header>
-            <h4 id="logo">Farm Link JA</h4>
-            <nav id="nav_bar">
-                <ul id="nav-li">
-                    <li class="nav-li-item"><a href="./login.html">Login</a></li>
-                    <li class="nav-li-item"><a href="./register.html">Register</a></li>
-                    <li class="nav-li-item"><a href="./marketplace.html">Marketplace</a></li>
-                </ul>
-            </nav>
-        </header>
-        <main>
-            <div class="alert-box">
-                <h3 class="alert-message">Alert</h3>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Farm Link JA</title>
+    <meta name="description" content="Connecting farmers and buyers across Jamaica">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./styles/index.css">
+</head>
+<body>
+
+<header>
+    <h4 id="logo">Farm Link JA</h4>
+    <nav id="nav_bar">
+        <ul id="nav-li">
+            <li class="nav-li-item"><a href="./login.html">Login</a></li>
+            <li class="nav-li-item"><a href="./register.html">Register</a></li>
+            <li class="nav-li-item"><a href="./marketplace.html">Marketplace</a></li>
+        </ul>
+    </nav>
+</header>
+
+<main>
+    <!-- Hero Section -->
+    <section class="section" id="hero-section">
+        <div id="intro-block">
+            <hgroup id="hero-section-hgroup">
+                <h1 id="hero-section-header">Fair Prices. Fresh Markets. Powered by Farmers.</h1>
+                <p class="hero-header-text">FarmLink JA helps farmers track crop prices across Jamaica, connect with buyers, and sell directly — no middlemen, no guesswork.</p>
+                <p class="hero-header-text">Get real-time market prices, weather alerts, and tools to make farming profitable and sustainable.</p>
+                <a id="hero-cta" href="./register.html">Get Started</a>
+            </hgroup>
+            
+            <figure id="hero-section-figure">
+                <img id="hero-section-img" src="./images/image_1-515.jpg" alt="Farmer picking crops">
+            </figure>
+        </div>
+    </section>
+
+    <!-- Features / Benefits -->
+    <section class="section" id="features">
+        <h2>Why Choose FarmLink JA?</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <h3>Real Market Prices</h3>
+                <p>See accurate crop prices updated daily across all parishes.</p>
             </div>
-            <section class="section" id="hero-section">
-                <div id="intro-block">
-                    <hgroup id="hero-section-hgroup">
-                        <h1 id="hero-section-header">Fair Prices. Fresh Markets. Powered by Farmers.</h1>
-                        <p class="hero-header-text">FarmLink JA helps farmers track crop prices across Jamaica, connect with buyers, and sell directly — no middlemen, no guesswork.</p>
-                        <p class="hero-header-text">Get real-time market prices, weather alerts, and tools to make farming profitable and sustainable.</p>
-                    </hgroup>
-                    
-                    <figure  id="hero-section-figure">
-                        <img id="hero-section-img" src="./images/image_1-515.jpg" alt="image of a farmer picking crops">
-                    </figure>
-                    
-                </div>
-                <div id="roles-button-container">
-                    <h3>Connecting Farmers and Buyers Across Jamaica.</h3>
-                    <a id="selectRolesButton" href="./register.html">Select Role</a>
-                </div>
-                
-                <div id="roles">
-                    <div class="role-container" id="farmer-role">
-                        <h4 class="role-headings">For Farmers</h4>
-                        <ul class="role-list">
-                            <li>See real market prices</li>
-                            <li>Sell directly to buyers</li>
-                            <li>Get weather & pest alerts</li>
-                        </ul>
-                    </div>
-                    <div class="role-container" id="buyer-role">
-                        <h4 class="role-headings">For Buyers</h4>
-                        <ul class="role-list">
-                            <li>Compare crop prices across parishes</li>
-                            <li>Buy fresh produce direct from farms</li>
-                            <li>Build trusted farmer connections</li>
-                        </ul>
-                    </div>
-                </div>
-                
-                
-            </section>
-        </main>
-        
-        
-    </body>
+            <div class="feature-card">
+                <h3>Direct Sales</h3>
+                <p>Buy or sell directly with farmers or buyers — no middlemen.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Alerts & Tools</h3>
+                <p>Get weather, pest alerts, and planning tools to optimize farming.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roles Section -->
+    <section class="section" id="roles">
+        <h2>Who We Serve</h2>
+        <div class="roles-container">
+            <div class="role-card" id="farmer-role">
+                <h3>Farmers</h3>
+                <ul>
+                    <li>See real market prices</li>
+                    <li>Sell directly to buyers</li>
+                    <li>Get weather & pest alerts</li>
+                </ul>
+                <a class="role-cta" href="./register.html">Join as Farmer</a>
+            </div>
+            <div class="role-card" id="buyer-role">
+                <h3>Buyers</h3>
+                <ul>
+                    <li>Compare crop prices across parishes</li>
+                    <li>Buy fresh produce direct from farms</li>
+                    <li>Build trusted farmer connections</li>
+                </ul>
+                <a class="role-cta" href="./register.html">Join as Buyer</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof / Testimonials -->
+    <section class="section" id="testimonials">
+        <h2>What Our Users Say</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <p>"FarmLink JA transformed the way I sell my crops. Prices are clear and buyers trust me now!"</p>
+                <h4>- John, Farmer</h4>
+            </div>
+            <div class="testimonial-card">
+                <p>"I can now find fresh produce easily and at fair prices. Highly recommend FarmLink JA!"</p>
+                <h4>- Maria, Buyer</h4>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section" id="cta-section">
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of farmers and buyers across Jamaica today!</p>
+        <a class="cta-btn" href="./register.html">Sign Up Now</a>
+    </section>
+</main>
+
+<footer>
+    <p>© 2025 Farm Link JA. All rights reserved.</p>
+</footer>
+
+<!-- <script src="./js/main.js"></script> -->
+</body>
 </html>

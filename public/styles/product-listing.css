@@ -1,0 +1,216 @@
+/* === BASIC RESET === */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #f6f7f9;
+  color: #333;
+}
+
+/* === HEADER === */
+header {
+  width: 100%;
+  background-color: #2e7d32;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 40px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#logo {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: transform 0.2s ease;
+}
+
+#logo:hover {
+  transform: scale(1.05);
+}
+
+#nav_bar ul {
+  display: flex;
+  list-style: none;
+}
+
+.nav-li-item {
+  margin-left: 25px;
+}
+
+.nav-li-item a {
+  color: #f0f0f0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  position: relative;
+}
+
+.nav-li-item a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
+.nav-li-item a:hover::after {
+  width: 100%;
+}
+
+/* === PAGE LAYOUT WRAPPER === */
+.main-layout {
+  display: flex;
+  margin-top: 70px; /* header height offset */
+}
+
+/* === SIDE PANEL (Desktop Default) === */
+.side-panel {
+  position: fixed;
+  top: 55px; /* just below header */
+  left: 0;
+  height: calc(100vh - 70px);
+  width: 230px;
+  background-color: rgb(245, 241, 236);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 25px 10px;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  border-right: 2px solid #f0dfc2;
+  z-index: 999;
+}
+
+.side-panel-btn {
+  background-color: bisque;
+  border: 2px solid beige;
+  border-radius: 10px;
+  padding: 8px 15px;
+  font-weight: bold;
+  margin-bottom: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.side-panel-btn:hover {
+  background-color: #ffe0b8;
+}
+
+.side-panel-list {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+}
+
+.side-panel-links {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #3a2a17;
+  padding: 12px 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.side-panel-links:hover {
+  background-color: #fff3e0;
+  transform: translateX(4px);
+}
+
+.side-panel-icon {
+  font-size: 1.4rem;
+  margin-right: 10px;
+}
+
+.side-panel-links-text {
+  font-size: 1rem;
+}
+
+/* === POST SECTION (Desktop) === */
+.main-section {
+  margin-top: 5%;
+  margin-left: 230px; /* offset for sidebar width */
+  width: calc(100% - 230px);
+  min-height: 100vh;
+  background-color: #f9f9f9;
+  padding: 30px 20px;
+}
+
+/* === MAP DESIGN === */
+#map {
+  height: 500px;
+  width: 90%;
+  margin: auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+button {
+  margin: 10px;
+  padding: 8px 14px;
+  border: none;
+  background: #333;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+button:hover {
+  background: #555;
+}
+/* === RESPONSIVE DESIGN === */
+
+/* Medium screens: side panel below header */
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;
+    margin-top: 55px; /* header + side panel height */
+  }
+
+  .side-panel {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
+    border-right: none;
+    border-top: 2px solid #f0dfc2;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+
+  .side-panel-btn {
+    display: none;
+  }
+
+  .side-panel-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .side-panel-list li {
+    margin: 0 10px;
+  }
+
+  .main-section {
+    margin-left: 0;
+    margin-top: 0%;
+    width: 100%;
+  }
+}

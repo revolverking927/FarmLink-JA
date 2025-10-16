@@ -49,23 +49,39 @@ const verifyToken = (req, res, next) => {
 let initialPath = path.join(__dirname, "public");
 
 app.use(bodyParser.json());
-app.use(express.static(initialPath));
+app.use(express.static(path.join(initialPath)));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(initialPath, "index.html"));
-})
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(initialPath, "index.html"));
+// })
 
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(initialPath, "login.html"));
-})
+// app.get('/login', (req, res) => {
+//     res.sendFile(path.join(initialPath, "login.html"));
+// })
 
-app.get('/register', (req, res) => {
-    res.sendFile(path.join(initialPath, "register.html"));
-})
+// app.get('/register', (req, res) => {
+//     res.sendFile(path.join(initialPath, "register.html"));
+// })
 
-app.get('/marketplace', (req, res) => {
-    res.sendFile(path.join(initialPath, "marketplace.html"));
-})
+// app.get('/marketplace', (req, res) => {
+//     res.sendFile(path.join(initialPath, "marketplace.html"));
+// })
+
+// app.get('/farmer-hub'), (req, res) => {
+//     res.sendFile(path.join(initialPath, "farmer-hub.html"))
+// }
+
+// app.get('/buyer-hub'), (req, res) => {
+//     res.sendFile(path.join(initialPath, "buyer-hub.html"))
+// }
+
+// app.get('/product-listing'), (req, res) => {
+//     res.sendFile(path.join(initialPath, "product-listing.html"))
+// }
+
+// app.get('/data/geoBoundaries-JAM-ADM3.json'), (req, res) => {
+//     res.sendFile(path.join(initialPath, "data" ,"jamaica.js"))
+// }
 
 app.post('/register-user', (req, res) => {
     //gives access to the variables in the request
@@ -255,6 +271,49 @@ app.delete('/delete-post/:id', verifyToken, async (req, res) => {
         console.error(err);
         res.status(500).json({ error: 'Failed to delete post' });
     }
+})
+
+app.post('/post-goods', verifyToken, async (req, res) => {
+    const user = req.user;
+    if (!user) return res.status(400).json({ error: "Invalid user" });
+
+    const {item_name, price, description} = req.body;
+    if (!item_name || !price ) return res.status(400).json({ error: "One or more fields are required"});
+    
+    // Ensure price is an integer
+    const priceInt = parseInt(price, 10);
+    if (isNaN(priceInt)) {
+        return res.status(400).json({ error: "Price must be a number" });
+    }
+
+    db('goods').insert({
+        userid: user.id,
+        item_name,
+        price: priceInt,
+        description,
+    })
+    .returning('*')
+    .then(data => {
+        console.log('Data saved', data[0]);
+        res.json(data[0]);
+    })
+    .catch(err => {
+        res.status(500).json({ error: "Failed to insert data"});
+    })
+})
+
+app.get('/get-all-goods', verifyToken, async (req, res) => {
+    const user = req.user;
+    if (!user) return res.status(400).json({ error: 'Invalid user'});
+
+    db('goods')
+        .select('*')
+        .where('userid', user.id)
+        .orderBy('listid')
+    .then(data => {
+        console.log('Data found', data);
+        res.json(data);
+    })
 })
 
 app.listen(3000, (req, res) => {

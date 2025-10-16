@@ -1,3 +1,4 @@
 {
-    "vmssoftware.project-dep.buildName": "DEBUG"
+    "vmssoftware.project-dep.buildName": "DEBUG",
+    "livePreview.defaultPreviewPath": "/test.html"
 }

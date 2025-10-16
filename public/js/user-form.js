@@ -9,7 +9,7 @@ const lastname = document.querySelector('#last-name');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
 const parish = document.querySelector('#parish');
-// const license = document.querySelector('#food-handlers-license');
+const license = document.querySelector('#food-handlers-license');
 const submitBtn = document.querySelector('#submit-btn');
 
 let currRole = 'farmer';
@@ -60,14 +60,14 @@ if (firstname == null && lastname == null) { //means login page is open
 
     buyerBtn.addEventListener('click', () => {//when buyer button is clicked
         if (currRole === 'farmer') {
-            // license.setAttribute('hidden', true);
+            license.setAttribute('hidden', true);
         }
         currRole = 'buyer';
     });
 
     farmerBtn.addEventListener('click', () => {//when farmer button is clicked
         if (currRole === 'buyer') {
-            // license.removeAttribute('hidden');
+            license.removeAttribute('hidden');
         }
         currRole = 'farmer';
     });

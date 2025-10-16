@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html lang="en-us">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Farm Link JA</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="./styles/product-listing.css">
+        <link rel="stylesheet" href="./styles/alert.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    </head>
+    <body>
+        <header>
+            <h4 id="logo">Farm Link JA</h4>
+            <nav id="nav_bar">
+                <ul id="nav-li">
+                    <li class="nav-li-item"><a href="./index.html">Home</a></li>
+                    <li class="nav-li-item"><a href="./profile.html">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div class="alert-box">
+                <h3 class="alert-message">Alert</h3>
+            </div>
+            <div class="side-panel">
+                <button type="button" class="side-panel-btn">MENU</button>
+                <ul class="side-panel-list">
+                    <li>
+                        <a href="./marketplace.html" class="side-panel-links">
+                            <div class="side-panel-icon"></div>
+                            <h5 class="side-panel-links-text">Home Feed</h5>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./product-listing.html" class="side-panel-links">
+                            <div class="side-panel-icon"></div>
+                            <h5 class="side-panel-links-text">Product Listing</h5>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <section class="main-section">
+                <div class="search-box">
+                    <div class="row">
+                        <input type="text" id="input-box" placeholder="Find post" autocomplete="off">
+                        <button>search</button>
+                    </div>
+                    <div class="result">
+                        <div class="goods-result">
+                            <div class="result-info">
+                                <h4 class="result-product">Banana</h4>
+                                <h4 class="result-price">$150 per lb</h4>
+                                <button class="result-save-icon">Save</button>
+                            </div>
+                            <div class="result-description">
+                                <p>Buy the ripe bananas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-wrapper">
+                    <h2>Map of Jamaica — Region Highlight</h2>
+                    <div id="map"></div>
+
+                    <div class="btn-container">
+                        <button class="zoom-btn" data-name="Kingston">Focus Kingston</button>
+                        <button class="zoom-btn" data-name="Saint James">Focus Saint James</button>
+                        <button class="zoom-btn" data-name="Saint Andrew">Focus Saint Andrew</button>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+        <script type="module" src="./js/product-listing.js"></script>
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <script type="module" src="./js/map.js"></script>
+    </body>
+</html>
