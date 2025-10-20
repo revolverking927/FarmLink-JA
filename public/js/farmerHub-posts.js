@@ -110,7 +110,7 @@ const initializeButtons = (token) => {
         setTimeout(() => {
             postBox.style.top = "-100%";
             
-            form.reset(); // Clear inputs
+            postBox.reset(); // Clear inputs
         }, 300);
 
         postBox.style.opacity = 0;
@@ -152,7 +152,7 @@ const initializeButtons = (token) => {
 
             newPost(userData, postData, token);
             // Clear inputs
-            form.reset();
+            postBox.reset();
         });
     })
 }

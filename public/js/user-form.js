@@ -8,6 +8,9 @@ const firstname = document.querySelector('#first-name') || null;
 const lastname = document.querySelector('#last-name');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
+const address1 = document.querySelector('#address1');
+const address2 = document.querySelector('#address2');
+const city_town = document.querySelector('#city_town');
 const parish = document.querySelector('#parish');
 const license = document.querySelector('#food-handlers-license');
 const submitBtn = document.querySelector('#submit-btn');
@@ -39,22 +42,37 @@ if (firstname == null && lastname == null) { //means login page is open
     })
 } else { //means register page is open
 
-     submitBtn.addEventListener('click', () => {//form submission button
-        fetch('/register-user', { //used to submit the form
+    submitBtn.addEventListener('click', () => {//form submission button
+        // fetch('/register-user', { //used to submit the form
+        //     method: 'post',
+        //     headers: new Headers({'Content-Type': 'application/json'}),
+        //     body: JSON.stringify({
+        //         firstname: firstname.value,
+        //         lastname: lastname.value,
+        //         email: email.value,
+        //         password: password.value,
+        //         address1: address1.value,
+        //         address2: address2.value,
+        //         city_town: city_town.value,
+        //         parish: parish.value,
+        //         role: currRole,
+        //     }) 
+        // }) 
+        // .then(res => res.json()) //response to json
+        // .then(data => {
+        //     validateData(data);
+        // })
+        fetch('/verify-address', {
             method: 'post',
             headers: new Headers({'Content-Type': 'application/json'}),
             body: JSON.stringify({
-                firstname: firstname.value,
-                lastname: lastname.value,
-                email: email.value,
-                password: password.value,
-                parish: parish.value,
-                role: currRole,
-            }) 
-        }) 
-        .then(res => res.json()) //response to json
+                street: '12A Molynes Rd',
+                city: 'Kingston'
+            })
+        })
+        .then(res => res.json())
         .then(data => {
-            validateData(data);
+            console.log(data);
         })
     })
 
@@ -86,8 +104,8 @@ const alertBox = (data) => {
 
 const validateData = (data, currentPage) => {
     console.log(data);
-    if(!data.userData.firstname || !data.token) {
-        alertBox(data.userData);
+    if(data ="fill all the fields" || !data.userData.firstname || !data.token) {
+        alertBox(data);
     } else {
         sessionStorage.name = data.userData.name;
         sessionStorage.email = data.userData.email;

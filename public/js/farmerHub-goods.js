@@ -36,7 +36,7 @@ const createLi = (liData) => {
 }
 
 const loadGoodsList = (token) => {
-  fetch('/get-all-goods', {
+  fetch('/get-current-user-goods', {
     method: 'get',
     headers: new Headers({
       'Content-Type': 'application/json',

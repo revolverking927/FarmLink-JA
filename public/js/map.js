@@ -1,8 +1,9 @@
 import checkUser from "./helpers/user-log.js";
 
-let adm1Layer, adm3Layer, townLayer;
 let map;
+let adm1Layer;
 let currentParish = null;
+let isGray = true;
 
 (async () => {
   const user = await checkUser();
@@ -11,23 +12,50 @@ let currentParish = null;
   // Initialize map
   map = L.map("map").setView([18.1096, -77.2975], 8);
 
-  // Base gray map
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  // Start with gray map
+  const grayLayer = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
     attribution: "&copy; CARTO",
     maxZoom: 19,
   }).addTo(map);
 
+  // Normal map layer (hidden initially)
+  const normalLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap",
+    maxZoom: 19,
+  });
+
   await loadParishes(map);
 
-  map.on("zoomend", updateTownVisibility);
+  // Switch map styles when zoom changes
+  map.on("zoomend", () => {
+    const zoom = map.getZoom();
+    if (zoom >= 10 && isGray) {
+      map.removeLayer(grayLayer);
+      normalLayer.addTo(map);
+      isGray = false;
+    } else if (zoom < 10 && !isGray) {
+      map.removeLayer(normalLayer);
+      grayLayer.addTo(map);
+      isGray = true;
+    }
+  });
 })();
 
 function styleParish(feature) {
-  return { color: "#666", weight: 1, fillColor: "#ccc", fillOpacity: 0.6 };
+  return {
+    color: "#666",
+    weight: 1,
+    fillColor: "#ccc",
+    fillOpacity: 0.6,
+  };
 }
 
 function highlightParish(layer) {
-  layer.setStyle({ fillColor: "#fff", color: "#000", weight: 2 });
+  layer.setStyle({
+    fillColor: "#fff",
+    color: "#000",
+    weight: 2,
+  });
 }
 
 function resetParish(layer) {
@@ -44,61 +72,25 @@ async function loadParishes(map) {
       layer.bindPopup(`<b>${feature.properties.shapeName}</b>`);
 
       layer.on({
-        mouseover: () => highlightParish(layer),
+        mouseover: () => {
+          if (currentParish && currentParish !== layer) {
+            resetParish(currentParish);
+          }
+          highlightParish(layer)
+        },
         mouseout: () => {
           if (currentParish !== layer) resetParish(layer);
         },
-        click: async () => {
+        click: () => {
+          if (currentParish && currentParish !== layer) {
+            resetParish(currentParish);
+          }
+
           currentParish = layer;
           map.fitBounds(layer.getBounds());
           highlightParish(layer);
-
-          // Remove existing town/city layer before adding new one
-          if (adm3Layer) map.removeLayer(adm3Layer);
-
-          // Load ADM3 and filter by clicked parish
-          await loadTownsForParish(layer.feature.properties.shapeName);
         },
       });
     },
   }).addTo(map);
-}
-
-async function loadTownsForParish(parishName) {
-  const res = await fetch("/data/geoBoundaries-JAM-ADM3.geojson");
-  const data = await res.json();
-
-  // Filter towns that belong to the clicked parish
-  const filtered = {
-    type: "FeatureCollection",
-    features: data.features.filter(
-      (f) =>
-        f.properties.shapeGroup &&
-        f.properties.shapeGroup.toLowerCase().includes(parishName.toLowerCase())
-    ),
-  };
-
-  adm3Layer = L.geoJSON(filtered, {
-    style: {
-      color: "#444",
-      weight: 1,
-      fillColor: "#888",
-      fillOpacity: 0.6,
-    },
-    onEachFeature: (feature, layer) => {
-      layer.bindPopup(`<b>${feature.properties.shapeName}</b>`);
-    },
-  }).addTo(map);
-}
-
-function updateTownVisibility() {
-  const zoom = map.getZoom();
-  if (adm3Layer) {
-    adm3Layer.eachLayer((layer) => {
-      layer.setStyle({
-        opacity: zoom >= 11 ? 1 : 0,
-        fillOpacity: zoom >= 11 ? 0.7 : 0,
-      });
-    });
-  }
 }
