@@ -37,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <form class="register-form" id="farmer-register-form">
+            <form class="register-form active" id="farmer-register-form">
                 <h1>Register</h1>
                 <h3>Create an account</h3>
 
@@ -47,6 +47,17 @@
                 <br/>
                 <input type="email" placeholder="Email" class="input" id="email" name="email" required/>
                 <br/>
+                <input type="password" placeholder="Password" class="input" id="password" name="password" required/>
+                <br/>
+                <input type="image" title="Upload Food Handler's License" class="input" id="food-handlers-license" name="food-handlers-license" accept="image\*" required/>
+            </form>
+            <form class="register-form">
+                <input type="text" placeholder="Address1" class="input" id="address1" required>
+                <br />
+                <input type="text" placeholder="Address2" class="input" id="address2">
+                <br />
+                <input type="text" placeholder="City/Town" class="input" id="city_town" required>
+                <br />
                 <select title="parish" class="input" id="parish" name="parish"  required>
                     <option value="" disabled selected>-- Choose a Parish --</option>
                     <option value="kingston">Kingston</option>
@@ -64,14 +75,10 @@
                     <option value="portland">Portland</option>
                     <option value="saint-thomas">Saint Thomas</option>
                 </select>
-                <br/> 
-                <input type="password" placeholder="Password" class="input" id="password" name="password" required/>
-                <br/>
-                <input type="image" title="Upload Food Handler's License" class="input" id="food-handlers-license" name="food-handlers-license" accept="image\*" required/>
                 <br/>
                 <button type="button" id="submit-btn">register</button>
-            </form>
 
+            </form>
         </main>
         <script src="./js/user-form.js"></script>
     </body>

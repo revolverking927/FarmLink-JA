@@ -4,6 +4,7 @@ const bodyParser = require('body-parser'); //body-parser allow the code to send 
 const knex = require('knex'); //knex will allow the cde to access the database(farmlink)
 const jwt = require('jsonwebtoken');
 const multer = require("multer");
+const validateAddress = require('./validateAddress.js');
 
 const SECRET_KEY = 'super_secret_key';
 
@@ -51,17 +52,17 @@ let initialPath = path.join(__dirname, "public");
 app.use(bodyParser.json());
 app.use(express.static(path.join(initialPath)));
 
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(initialPath, "index.html"));
-// })
+app.get('/', (req, res) => {
+    res.sendFile(path.join(initialPath, "index.html"));
+})
 
-// app.get('/login', (req, res) => {
-//     res.sendFile(path.join(initialPath, "login.html"));
-// })
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(initialPath, "login.html"));
+})
 
-// app.get('/register', (req, res) => {
-//     res.sendFile(path.join(initialPath, "register.html"));
-// })
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(initialPath, "register.html"));
+})
 
 // app.get('/marketplace', (req, res) => {
 //     res.sendFile(path.join(initialPath, "marketplace.html"));
@@ -85,18 +86,21 @@ app.use(express.static(path.join(initialPath)));
 
 app.post('/register-user', (req, res) => {
     //gives access to the variables in the request
-    const {firstname, lastname, email, password, parish, role} = req.body; 
+    const {firstname, lastname, email, password, address1, address2, city_town, parish, role} = req.body; 
 
-    if (!firstname || !lastname || !email || !password || !parish || !role) {
+    if (!firstname.length || !lastname.length || !email.length || !password.length || !parish.length || !role.length) {
         res.json('fill all the fields');
     } else {
         db("users").insert({
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            password: password, 
-            parish: parish,
-            role: role,
+            firstname,
+            lastname,
+            email,
+            password, 
+            address1,
+            address2,
+            city_town,
+            parish,
+            role,
         })
         .returning(["*"]) // returning all the columns in the users table of the current row
         .then(data => {
@@ -219,8 +223,8 @@ app.post('/get-posts', (req, res) => {
     db('farmer_posts') 
         .select('*')
         .orderBy('postid')
-        .limit(limit)
-        .offset(offset)
+        //.limit(limit)
+        //.offset(offset)
     .then(data => {
         console.log(data);
         res.json(data)
@@ -291,6 +295,8 @@ app.post('/post-goods', verifyToken, async (req, res) => {
         item_name,
         price: priceInt,
         description,
+        //user_firstname: user.firstname,
+        //user_lastname: user.lastname,
     })
     .returning('*')
     .then(data => {
@@ -302,19 +308,44 @@ app.post('/post-goods', verifyToken, async (req, res) => {
     })
 })
 
-app.get('/get-all-goods', verifyToken, async (req, res) => {
+app.get('/get-current-user-goods', verifyToken, async (req, res) => {
     const user = req.user;
     if (!user) return res.status(400).json({ error: 'Invalid user'});
 
+    const goodsData = []; //an array to hold the combined data of each user and goods
     db('goods')
         .select('*')
         .where('userid', user.id)
         .orderBy('listid')
     .then(data => {
         console.log('Data found', data);
+        //goodsData.push(data[0].concat(user));
         res.json(data);
     })
 })
+
+app.get('/get-all-goods', verifyToken, async (req, res) => {
+    const user = req.user;
+    if (!user) return res.status(400).json({ error: 'Invalid user'});
+
+    const goodsData = []; //an array to hold the combined data of each user and goods
+    db('goods')
+        .select('*')
+        //.where('userid', user.id)
+        .orderBy('listid')
+    .then(data => {
+        console.log('Data found', data);
+        //goodsData.push(data[0].concat(user));
+        res.json(data);
+    })
+})
+
+app.post("/verify-address", async (req, res) => {
+  const { address } = req.body;
+  console.log("Start");
+  const isValid = await validateAddress(address);
+  res.json({ valid: isValid });
+});
 
 app.listen(3000, (req, res) => {
     console.log('listening on port 3000.......')

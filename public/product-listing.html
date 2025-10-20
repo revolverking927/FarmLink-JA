@@ -10,6 +10,21 @@
         <link rel="stylesheet" href="./styles/product-listing.css">
         <link rel="stylesheet" href="./styles/alert.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://s3.amazonaws.com/builds.handlebarsjs.com/handlebars-v4.7.8.js"></script>
+        <script src="https://kit.fontawesome.com/8fc3080d67.js" crossorigin="anonymous"></script>
+        <!-- product result handlebars template -->
+        <script id="product-result-template" type="text/x-handlebars-template">
+            <li class="product-result">
+                <div class="result-info">
+                    <h4 class="result-product">{{item_name}}</h4>
+                    <h4 class="result-price">{{price}}</h4>
+                    <button class="result-save-icon">Save</button>
+                </div>
+                <div class="result-description">
+                    <p>{{#if description}}{{description}}{{/if}}</p>
+                </div>
+            </li>
+    </script>
     </head>
     <body>
         <header>
@@ -45,20 +60,32 @@
             <section class="main-section">
                 <div class="search-box">
                     <div class="row">
-                        <input type="text" id="input-box" placeholder="Find post" autocomplete="off">
-                        <button>search</button>
+                        <input type="text" id="input-box" placeholder="Search good" autocomplete="off">
+                        <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </div>
-                    <div class="result">
-                        <div class="goods-result">
-                            <div class="result-info">
-                                <h4 class="result-product">Banana</h4>
-                                <h4 class="result-price">$150 per lb</h4>
-                                <button class="result-save-icon">Save</button>
-                            </div>
-                            <div class="result-description">
-                                <p>Buy the ripe bananas</p>
-                            </div>
-                        </div>
+                    <div class="result-box">
+                        <ul>
+                            <!-- <li class="product-result">
+                                <div class="result-info">
+                                    <h4 class="result-product">Banana</h4>
+                                    <h4 class="result-price">$150 per lb</h4>
+                                    <button class="result-save-icon">Save</button>
+                                </div>
+                                <div class="result-description">
+                                    <p>Buy the ripe bananas</p>
+                                </div>
+                            </li>
+                            <li class="product-result">
+                                <div class="result-info">
+                                    <h4 class="result-product">Ackee</h4>
+                                    <h4 class="result-price">$350 per bag</h4>
+                                    <button class="result-save-icon">Save</button>
+                                </div>
+                                <div class="result-description">
+                                    <p>Buy some ackees now</p>
+                                </div>
+                            </li> -->
+                        </ul>
                     </div>
                 </div>
                 <div class="map-wrapper">
@@ -77,5 +104,6 @@
         <script type="module" src="./js/product-listing.js"></script>
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
         <script type="module" src="./js/map.js"></script>
+        <!-- <script type="module" src="./js/modules/autocomplete.js"></script> -->
     </body>
 </html>
