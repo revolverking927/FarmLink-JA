@@ -8,8 +8,7 @@ const firstname = document.querySelector('#first-name') || null;
 const lastname = document.querySelector('#last-name');
 const email = document.querySelector('#email');
 const password = document.querySelector('#password');
-const address1 = document.querySelector('#address1');
-const address2 = document.querySelector('#address2');
+const street = document.querySelector('#street');
 const city_town = document.querySelector('#city_town');
 const parish = document.querySelector('#parish');
 const license = document.querySelector('#food-handlers-license');
@@ -33,7 +32,7 @@ if (firstname == null && lastname == null) { //means login page is open
         .then(data => {
            // if (data.token) {
            //     localStorage.setItem('token', data.token);
-                validateData(data, 'login');
+                validateData(data);
           //  } else {
 
            // }
@@ -43,37 +42,37 @@ if (firstname == null && lastname == null) { //means login page is open
 } else { //means register page is open
 
     submitBtn.addEventListener('click', () => {//form submission button
-        // fetch('/register-user', { //used to submit the form
-        //     method: 'post',
-        //     headers: new Headers({'Content-Type': 'application/json'}),
-        //     body: JSON.stringify({
-        //         firstname: firstname.value,
-        //         lastname: lastname.value,
-        //         email: email.value,
-        //         password: password.value,
-        //         address1: address1.value,
-        //         address2: address2.value,
-        //         city_town: city_town.value,
-        //         parish: parish.value,
-        //         role: currRole,
-        //     }) 
-        // }) 
-        // .then(res => res.json()) //response to json
-        // .then(data => {
-        //     validateData(data);
-        // })
-        fetch('/verify-address', {
+        fetch('/register-user', { //used to submit the form
             method: 'post',
             headers: new Headers({'Content-Type': 'application/json'}),
             body: JSON.stringify({
-                street: '12A Molynes Rd',
-                city: 'Kingston'
+                firstname: firstname.value,
+                lastname: lastname.value,
+                email: email.value,
+                password: password.value,
+                street: street.value, //'12A Molynes Rd',
+                city: city_town.value,
+                parish: parish.value,
+                role: currRole,
+            }) 
+            }) 
+            .then(res => res.json()) //response to json
+            .then(data => {
+                validateData(data);
             })
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log(data);
-        })
+        // fetch('/verify-address', {
+        //     method: 'post',
+        //     headers: new Headers({'Content-Type': 'application/json'}),
+        //     body: JSON.stringify({
+        //         street: '12A Molynes Rd',
+        //         // parish: 'Saint Andrew'
+        //     })
+        // })
+        // .then(res => res.json())
+        // .then(data => {
+        //     console.log(data);
+            
+        // })
     })
 
     buyerBtn.addEventListener('click', () => {//when buyer button is clicked
@@ -94,9 +93,9 @@ if (firstname == null && lastname == null) { //means login page is open
 const alertBox = (data) => {
     const alertContainer = document.querySelector('.alert-box');
     const alertMsg = document.querySelector('.alert-message');
-    alertMsg.innerHTML = data;
+    alertMsg.innerHTML = data.error || data.message;
 
-    alertContainer.style.top = '5%';
+    alertContainer.style.top = '15%';
     setTimeout(() => {
         alertContainer.style.top = null;
     }, 5000);
@@ -104,17 +103,19 @@ const alertBox = (data) => {
 
 const validateData = (data, currentPage) => {
     console.log(data);
-    if(data ="fill all the fields" || !data.userData.firstname || !data.token) {
+    
+    if(!data.userData || !data.token) {
+        console.log("error");
         alertBox(data);
     } else {
-        sessionStorage.name = data.userData.name;
-        sessionStorage.email = data.userData.email;
-        localStorage.setItem('token', data.token);
-        // if (currentPage === 'login') {
+        console.log("redirect");
+        // sessionStorage.name = data.userData.name;
+        // sessionStorage.email = data.userData.email;
+        localStorage.setItem("email", data.userData.email);
+        localStorage.setItem("token", data.token);
+        
             location.href = '/profile.html';
-        // } else {
-        //     location.href = '/';
-        // }
+       
         
     }
 }

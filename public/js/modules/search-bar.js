@@ -1,18 +1,17 @@
 class _updateKeywords extends EventTarget {
     constructor() {
         super();
-        // this.status = 'idle';
     }
 
-    fire() {
-        // this.status = newStatus;
+    fire(result = []) {
         this.dispatchEvent(
             new CustomEvent('update-keywords', {
-                detail: { /*status: newStatus*/ }
+                detail: {  } // pass filtered results here
             })
         );
     }
 }
+
 
 // const app = new AppState();
 
@@ -32,6 +31,7 @@ export class SearchBar {
     #inputBox;
     #keywords;
     #resultSource;
+    #currentResults;
 
     constructor(resultBox, inputBox, keywords, resultSource) {
         this.#resultBox = resultBox;
@@ -48,27 +48,30 @@ export class SearchBar {
     get inputBox() {return this.#inputBox}
     get keywords() {return this.#keywords}
     get resultSource() {return this.#resultSource}
+    get currentResults() {return this.#currentResults || []}
 
     set resultBox(value) {this.#resultBox = value}
     set inputBox(value) {this.#inputBox = value}
     set keywords(value) {this.#keywords = value}
     set resultSource(value) {this.#resultSource = value}
+    set currentResults(value) {this.#currentResults = value}
 
     onkeyup = () => {
         let result = [];
         let input = this.inputBox.value;
         if (input.length) {
-            this.updateKeywords.fire();
             result = this.keywords.filter((keyword) => {
                 return keyword.item_name.toLowerCase().includes(input.toLowerCase());
             });
             console.log(result);
         }
+
         this.display(result);
+        this.updateKeywords.fire(); // pass result to event
     }
 
     display = (result) => {
-
+        this.currentResults = result;
         const content = result.map((resultData) => {
             const template = Handlebars.compile(this.resultSource);
             const elementData = template(resultData);

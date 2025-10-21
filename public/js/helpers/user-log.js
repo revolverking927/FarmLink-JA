@@ -1,6 +1,6 @@
 // helpers/user-log.js
 const checkUser = async () => {
-    const email = sessionStorage.email; // from login
+    const email = localStorage.getItem("email"); // from login
 
     if (!email) { // first check on reload
         location.href = '/login';

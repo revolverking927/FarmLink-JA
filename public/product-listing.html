@@ -14,7 +14,7 @@
         <script src="https://kit.fontawesome.com/8fc3080d67.js" crossorigin="anonymous"></script>
         <!-- product result handlebars template -->
         <script id="product-result-template" type="text/x-handlebars-template">
-            <li class="product-result">
+            <li class="product-result" data-list-id="{{list_id}}">
                 <div class="result-info">
                     <h4 class="result-product">{{item_name}}</h4>
                     <h4 class="result-price">{{price}}</h4>
@@ -24,7 +24,8 @@
                     <p>{{#if description}}{{description}}{{/if}}</p>
                 </div>
             </li>
-    </script>
+        </script>
+
     </head>
     <body>
         <header>
@@ -61,7 +62,7 @@
                 <div class="search-box">
                     <div class="row">
                         <input type="text" id="input-box" placeholder="Search good" autocomplete="off">
-                        <button class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button title="search-button" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i></button>
                     </div>
                     <div class="result-box">
                         <ul>

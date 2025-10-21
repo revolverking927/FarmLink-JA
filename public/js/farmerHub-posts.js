@@ -17,7 +17,7 @@ const source = document.querySelector('#new-post').innerHTML; // source code for
     
     const token = localStorage.getItem('token');
 
-    //console.log(user, token);
+    console.log(user, token);
     getAllPosts(user, token);
 
     initializeButtons(token);
@@ -64,7 +64,7 @@ const newPost = (userData, postData, token) => {
 
     deleteBtn.addEventListener('click', () => {
         console.log("delete post");
-        fetch(`/delete-post/${postData.postid}`, {
+        fetch(`/delete-post/${postData.post_id}`, {
             method: 'delete',
             headers: new Headers ({
                 'Content-Type': 'application/json',
@@ -98,61 +98,69 @@ const getAllPosts = (user, token) => {
 }
 
 const initializeButtons = (token) => {
+    const createPostBtn = document.querySelector('.create-post-btn');
+    const postBox = document.querySelector('.post-box');
+    const postBtn = postBox.querySelector('.post-btn');
+    const closePostBtn = postBox.querySelector('#post-box-close-btn');
+    const postHolder = document.querySelector('.post-holder');
+
     createPostBtn.addEventListener('click', () => {
+        postBox.hidden = false;
         setTimeout(() => {
             postBox.style.opacity = 1;
-        }, 300);
-        
-        postBox.style.top = "15%";
-    })
+            postBox.style.top = "15%";
+        }, 50);
+    });
 
     closePostBtn.addEventListener('click', () => {
-        setTimeout(() => {
-            postBox.style.top = "-100%";
-            
-            postBox.reset(); // Clear inputs
-        }, 300);
-
         postBox.style.opacity = 0;
-    })
+        postBox.style.top = "-100%";
+        setTimeout(() => {
+            postBox.reset();
+            postBox.hidden = true;
+        }, 300);
+    });
 
-    postBtn.addEventListener('click', (e) => {
+    postBtn.addEventListener('click', async (e) => {
         e.preventDefault();
-        const formData = new FormData(postBox);
 
-        const title = formData.get('title');
-        const content = formData.get('content');
-        const image = formData.get('image');
-        const price = formData.get('price');
-        const productType = formData.get('product-type');
+        const title = postBox.querySelector('input[name="title"]').value;
+        const content = postBox.querySelector('textarea[name="content"]').value;
+        const price = postBox.querySelector('input[name="price"]').value;
+        const productType = postBox.querySelector('select[name="product-type"]').value;
 
-        console.log(title);
-
-        //const token = localStorage.getItem('token');
-        console.log(token);
-        fetch('/create-post', {
-            method: 'post',
-            headers: new Headers({
+       
+        await fetch('/create-post', {
+            method: 'POST',
+            headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token //sends the token for the current user 
-            }),
+                'Authorization': 'Bearer ' + token
+            },
             body: JSON.stringify({
-                title: title,
-                content: content,
-                image: image,
-                price: price,
-                productType: productType
+                title,
+                content: content || null,
+                price,
+                productType
             })
         })
         .then(res => res.json())
         .then(data => {
-            //console.log(data);
-            const userData = data.userData;
-            const postData = data.postData;
+            console.log('Created post:', data);
 
-            newPost(userData, postData, token);
-            // Clear inputs
-            postBox.reset();
+            // Add new post to DOM
+            newPost(data.userData, data.postData, token);
+
+           
+        })
+        .catch(err => {
+            console.error('Error creating post:', err);
         });
-    })
-}
+        // Reset form
+        postBox.reset();
+        postBox.style.opacity = 0;
+        postBox.style.top = "-100%";
+        postBox.hidden = true;
+            
+        
+    });
+};

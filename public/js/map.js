@@ -4,6 +4,7 @@ let map;
 let adm1Layer;
 let currentParish = null;
 let isGray = true;
+let markers = [];
 
 (async () => {
   const user = await checkUser();
@@ -39,6 +40,8 @@ let isGray = true;
       isGray = true;
     }
   });
+
+  
 })();
 
 function styleParish(feature) {
@@ -94,3 +97,49 @@ async function loadParishes(map) {
     },
   }).addTo(map);
 }
+
+
+
+export const plotGoodsOnMap = (goods) => {
+    // 1. Remove old markers
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
+
+    // 2. Group goods by location
+    const grouped = {};
+    goods.forEach(good => {
+        if (!good.lat || !good.lon) return;
+
+        const key = `${good.lat},${good.lon}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(good);
+    });
+
+    // 3. Create markers (one per location)
+    Object.keys(grouped).forEach(key => {
+        const [lat, lon] = key.split(',').map(Number);
+        const goodsAtLocation = grouped[key];
+
+        // Build popup content: multiple goods in one place
+        let popupContent = `<div><b>Seller:</b> ${goodsAtLocation[0].firstname} ${goodsAtLocation[0].lastname}<br><br>`;
+        popupContent += `<b>Goods sold here:</b><br><ul>`;
+        
+        goodsAtLocation.forEach(item => {
+            popupContent += `
+                <li>
+                    <b>${item.item_name}</b> - $${item.price}
+                    ${item.description ? `<br><i>${item.description}</i>` : ""}
+                </li><br>`;
+        });
+
+        popupContent += "</ul></div>";
+
+        const marker = L.marker([lat, lon])
+            .addTo(map)
+            .bindPopup(popupContent);
+
+        markers.push(marker);
+    });
+};
+
+export {map};

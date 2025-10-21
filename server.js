@@ -4,7 +4,7 @@ const bodyParser = require('body-parser'); //body-parser allow the code to send 
 const knex = require('knex'); //knex will allow the cde to access the database(farmlink)
 const jwt = require('jsonwebtoken');
 const multer = require("multer");
-const validateAddress = require('./validateAddress.js');
+const axios = require('axios');
 
 const SECRET_KEY = 'super_secret_key';
 
@@ -47,6 +47,123 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+const verifyAddress = async (req, res, next) => {
+
+ try {
+    console.log('Making attempt');
+    const { street = '', city = '', parish = '', country = 'Jamaica' } = req.body || {};
+    console.log(req.body)
+    if (!street && !city && !parish) {
+      return res.status(400).json({ valid: false, message: 'Provide at least street, city or parish' });
+    }
+
+    const q = [street, city, parish, country].filter(Boolean).join(', ');
+
+    // --- Nominatim forward geocode ---
+    // See usage policy: https://operations.osmfoundation.org/policies/nominatim/
+    // Use a custom user-agent & email as required by policy.
+    const nominatimUrl = 'https://nominatim.openstreetmap.org/search';
+    const nominatimParams = {
+      q,
+      format: 'json',
+      addressdetails: 1,
+      limit: 5,
+      countrycodes: 'jm' // optional: restrict to Jamaica (jm)
+    };
+console.log("error found")
+    const nomRes = await axios.get(nominatimUrl, {
+        params: nominatimParams,
+        headers: {
+            'User-Agent': 'FarmLinkJA/1.0 (contact@farmlinkja.com)'
+            },
+
+        timeout: 8000
+    });
+    
+    const results = nomRes.data || [];
+    //console.log(results)
+    if (!results.length) {
+      // Optional fallback: try OpenCage if you have API key (uncomment below)
+      return res.json({ valid: false, message: 'Address not found' });
+    } else {
+        // Inspect top result (best match) and also try to find a result inside Jamaica
+        let best = results[0];
+        //const lat = parseFloat(best.lat);
+        //const lon = parseFloat(best.lon);
+        // prefer a result whose address.country_code == 'jm'
+        const jmCandidate = results.find(r => r.address && (r.address.country_code === 'jm' || normalize(r.address.country) === 'jamaica'));
+        if (jmCandidate) best = jmCandidate;
+
+        const addr = best.address || {};
+        const formatted = best.display_name;
+        const lat = parseFloat(best.lat);
+        const lon = parseFloat(best.lon);
+
+        // Check country is Jamaica
+        const countryMatches = addr.country && normalize(addr.country) === 'jamaica';
+        if (!countryMatches) {
+            // Not Jamaica -> invalid for your use case
+            return res.json({ valid: false, reason: 'Not in Jamaica', found: formatted, location: { lat, lon }, address: addr });
+        }
+
+        // Now check parish (ADM1) — GeoBoundaries uses 'state' or 'county' fields sometimes.
+        // Try common properties: county, state, state_district, region, parish
+        const parishCandidates = [
+            addr.county,
+            addr.state,
+            addr.region,
+            addr.state_district,
+            addr.parish,
+            addr.suburb // sometimes smaller unit
+        ].filter(Boolean);
+
+        // city candidates
+        const cityCandidates = [
+            addr.city,
+            addr.town,
+            addr.village,
+            addr.hamlet,
+            addr.suburb,
+            addr.locality
+        ].filter(Boolean);
+
+        // If user provided parish, require match
+        let parishOk = true;
+        if (parish) {
+            parishOk = parishCandidates.some(p => matches(parish, p));
+        }
+
+        // If user provided city, require match
+        let cityOk = true;
+        if (city) {
+            cityOk = cityCandidates.some(c => matches(city, c));
+        }
+        console.log(parishOk, cityOk);
+        // Final decision
+        const valid = parishOk && cityOk;
+
+        //   req.address = {
+        //     valid,
+        //     reason: valid ? 'ok' : 'mismatch',
+        //     found: { formatted, lat, lon, address: addr, raw: best },
+        //     checks: { parishOk, cityOk, parishCandidates, cityCandidates }
+        //   };
+        req.coordinates = {latitude: lat, longitude: lon};
+        req.address = addr;
+        req.requested_address = { street, city, parish, country },
+        req.formatted_address = formatted;
+        console.log("The address and requested address is", req.address, req.requested_address);
+        next();
+    }
+
+
+    // If we reach here, no match
+    // return res.json({ valid: false, message: 'Address not validated (no results)' });
+  } catch (err) {
+    console.error('verify-address error:', err.message || err);
+    return res.status(500).json({ valid: false, message: 'Server error' });
+  }
+};
 let initialPath = path.join(__dirname, "public");
 
 app.use(bodyParser.json());
@@ -64,31 +181,16 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(initialPath, "register.html"));
 })
 
-// app.get('/marketplace', (req, res) => {
-//     res.sendFile(path.join(initialPath, "marketplace.html"));
-// })
-
-// app.get('/farmer-hub'), (req, res) => {
-//     res.sendFile(path.join(initialPath, "farmer-hub.html"))
-// }
-
-// app.get('/buyer-hub'), (req, res) => {
-//     res.sendFile(path.join(initialPath, "buyer-hub.html"))
-// }
-
-// app.get('/product-listing'), (req, res) => {
-//     res.sendFile(path.join(initialPath, "product-listing.html"))
-// }
-
-// app.get('/data/geoBoundaries-JAM-ADM3.json'), (req, res) => {
-//     res.sendFile(path.join(initialPath, "data" ,"jamaica.js"))
-// }
-
-app.post('/register-user', (req, res) => {
+app.post('/register-user', verifyAddress, (req, res) => {
+    // console.log(req.address);
     //gives access to the variables in the request
-    const {firstname, lastname, email, password, address1, address2, city_town, parish, role} = req.body; 
+    const {firstname, lastname, email, password, role} = req.body; 
+    const address = req.address;
+    const requested_address = req.requested_address;
+    const coordinates = req.coordinates;
+    const formatted_address = req.formatted_address;
 
-    if (!firstname.length || !lastname.length || !email.length || !password.length || !parish.length || !role.length) {
+    if (!firstname.length || !lastname.length || !email.length || !password.length || !role.length) {
         res.json('fill all the fields');
     } else {
         db("users").insert({
@@ -96,18 +198,19 @@ app.post('/register-user', (req, res) => {
             lastname,
             email,
             password, 
-            address1,
-            address2,
-            city_town,
-            parish,
+            address,
+            requested_address,
+            formatted_address,
             role,
+            lat: coordinates.latitude,
+            lon: coordinates.longitude
         })
         .returning(["*"]) // returning all the columns in the users table of the current row
         .then(data => {
             const user = data[0];
             // Create a JWT token for authentication
             const token = jwt.sign(
-            { id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname, parish: user.parish },
+            { user_id: user.user_id, email: user.email, firstname: user.firstname, lastname: user.lastname, role: user.role, address: user.address, requested_address: user.requested_address },
             SECRET_KEY,
             { expiresIn: '1h' }
             );
@@ -145,17 +248,20 @@ app.post('/login-user', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
 
 
+    // const user = data[0];
     // Create a JWT token for authentication
     const token = jwt.sign(
-      { id: user.id, email: user.email, firstname: user.firstname, lastname: user.lastname, parish: user.parish },
-      SECRET_KEY,
-      { expiresIn: '1h' }
+    { user_id: user.user_id, email: user.email, firstname: user.firstname, lastname: user.lastname, role: user.role, address: user.address, requested_address: user.requested_address },
+    SECRET_KEY,
+    { expiresIn: '1h' }
     );
 
+           
     user.marketplace_post_sessions = 0;
 
     // Send the user info and token to the frontend
     res.json({ userData: data[0], token });
+
 
   } catch (err) {
     console.error(err);
@@ -176,53 +282,48 @@ app.get('/current-user', (req, res) => {
     .catch(err => res.status(500).json({error: "Database error"}));
 })
 
-app.post('/create-post', verifyToken, upload.single("image"), async (req, res) => {
+app.post('/create-post', verifyToken, /*upload.single("image"),*/ async (req, res) => {
+  try {
+    console.log(req.body);
     const { title, content, price, productType } = req.body;
-    const imageFile = req.file;
-    const user = req.user; //from the token
+    // const imageFile = req.file;
+    const user = req.user;
     console.log(user);
-    if (!user) return res.status(400).json({error: "Invalid user"});
+    if (!user) return res.status(400).json({ error: "Invalid user" });
+    if (!title || !price || !productType) return res.status(400).json({ error: "Missing required fields" });
 
-    if (!title) return res.status(400).json({error: "No title provided"});
-    if (!price) return res.status(400).json({error: "No price provided"});
-    if (!productType) return res.status(400).json({error: "No product type provided"});
+    // const imageData = imageFile ? imageFile.buffer.toString("base64") : null;
+    console.log(title, content, price, productType);
+    const newPost = await db("farmer_posts")
+      .insert({
+        user_id: user.user_id,
+        title,
+        // image: imageData,
+        content: content /*|| null*/,
+        price,
+        product_type: productType
+      })
+      .returning("*");
 
-    // Convert file to base64 if you want to store in DB
-    let imageData = null;
-    if (imageFile) {
-      imageData = imageFile.buffer.toString("base64");
-    }
-    console.log(imageFile, imageData);
- 
-    await db("farmer_posts").insert({
-        userid: user.id,
-        user_firstname: user.firstname,
-        user_lastname: user.lastname,
-        title: title,
-        image: imageData,
-        content: content,
-        price: price,
-        product_type: productType,
-    })
-    .returning("*") // returning all the columns in the farmer_posts table of the current row
-    .then(data => {
-        console.log('success')
-        console.log(imageFile, imageData);
-        res.json({postData: data[0], userData: user})
-        // res.json(data[0]);
-    })
-})
+    res.json({ postData: newPost[0], userData: user });
+      console.log(newPost);
+  } catch (err) {
+    console.error("Create post error:", err);
+    res.status(500).json({ error: "Failed to create post" });
+  }
+});
 
-app.post('/get-posts', (req, res) => {  
-    const { pageNumber } = req.body;
 
-    const limit = 10;
-    const offset = (pageNumber - 1) * limit;
+app.get('/get-posts', (req, res) => {  
+    // const { pageNumber } = req.body;
+
+    // const limit = 10;
+    // const offset = (pageNumber - 1) * limit;
 
     //load the chunk of posts on 'x' page
     db('farmer_posts') 
         .select('*')
-        .orderBy('postid')
+        .orderBy('post_id')
         //.limit(limit)
         //.offset(offset)
     .then(data => {
@@ -241,8 +342,8 @@ app.get('/get-current-user-posts', verifyToken, async (req, res) => {
     //returns an object of all the users posts
     db('farmer_posts')
         .select('*')
-        .orderBy('postid')
-        .where('userid', user.id)
+        .orderBy('post_id')
+        .where('user_id', user.user_id)
     .then(data => {
         console.log(data);
         res.json(data);
@@ -263,7 +364,7 @@ app.delete('/delete-post/:id', verifyToken, async (req, res) => {
     try {
         // Delete post only if it belongs to the user
         const deletedCount = await db('farmer_posts') // deleted count tells how many rows were deletd
-            .where({ userid: user.id, postid: id })
+            .where({ user_id: user.user_id, post_id: id })
             .del();
         console.log('the deleted count is: ' + deletedCount);
         if (deletedCount === 0) {
@@ -291,7 +392,7 @@ app.post('/post-goods', verifyToken, async (req, res) => {
     }
 
     db('goods').insert({
-        userid: user.id,
+        user_id: user.user_id,
         item_name,
         price: priceInt,
         description,
@@ -315,8 +416,8 @@ app.get('/get-current-user-goods', verifyToken, async (req, res) => {
     const goodsData = []; //an array to hold the combined data of each user and goods
     db('goods')
         .select('*')
-        .where('userid', user.id)
-        .orderBy('listid')
+        .where('user_id', user.user_id)
+        .orderBy('list_id')
     .then(data => {
         console.log('Data found', data);
         //goodsData.push(data[0].concat(user));
@@ -325,27 +426,138 @@ app.get('/get-current-user-goods', verifyToken, async (req, res) => {
 })
 
 app.get('/get-all-goods', verifyToken, async (req, res) => {
-    const user = req.user;
-    if (!user) return res.status(400).json({ error: 'Invalid user'});
-
-    const goodsData = []; //an array to hold the combined data of each user and goods
-    db('goods')
-        .select('*')
-        //.where('userid', user.id)
-        .orderBy('listid')
+    // try {
+    await db('goods')
+        .join('users', 'goods.user_id', 'users.user_id')
+        .select(
+            'goods.list_id',
+            'goods.item_name',
+            'goods.price',
+            'goods.description',
+            'users.firstname',
+            'users.lastname',
+            'users.lat',
+            'users.lon'
+        )
+    .orderBy('list_id')
     .then(data => {
-        console.log('Data found', data);
-        //goodsData.push(data[0].concat(user));
         res.json(data);
     })
-})
+    .catch(err => {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch goods' });
+    });
 
-app.post("/verify-address", async (req, res) => {
-  const { address } = req.body;
-  console.log("Start");
-  const isValid = await validateAddress(address);
-  res.json({ valid: isValid });
 });
+
+// Save a good for the current user
+app.post('/save-good/:list_id', verifyToken, async (req, res) => {
+    const user = req.user;  // buyer
+    const list_id = parseInt(req.params.list_id);
+
+    if (!user) return res.status(400).json({ error: "Invalid user" });
+    if (!list_id) return res.status(400).json({ error: "No good specified" });
+
+    try {
+        // Insert into saved_goods
+        const saved = await db('saved_goods')
+            .insert({
+                buyer_user_id: user.user_id,
+                good_list_id: list_id,
+            })
+            .onConflict(['buyer_user_id', 'good_list_id']) // avoid duplicates
+            .ignore()
+            .returning('*');
+
+        res.json({ message: 'Good saved successfully', saved: saved[0] || null });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Failed to save good' });
+    }
+});
+
+app.get('/get-saved-goods', verifyToken, async (req, res) => {
+    const user = req.user;
+    if (!user) return res.status(400).json({ error: "Invalid user" });
+
+    try {
+        const savedGoods = await db('saved_goods')
+            .join('goods', 'saved_goods.good_list_id', 'goods.list_id')
+            .join('users', 'goods.user_id', 'users.user_id') // get seller info
+            .select(
+                'saved_goods.saved_id',
+                'goods.list_id',
+                'goods.item_name',
+                'goods.price',
+                'goods.description',
+                'users.firstname',    // seller's firstname
+                'users.lastname',     // seller's lastname
+                'users.formatted_address',
+                // 'users.parish',
+                'users.lat',
+                'users.lon'
+            )
+            .where('saved_goods.buyer_user_id', user.user_id) // ✅ make sure this matches POST
+            .orderBy('saved_goods.saved_at', 'desc');
+
+        return res.json(savedGoods);
+    } catch (err) {
+        console.error("GET SAVED GOODS ERROR:", err);
+        return res.status(500).json({ error: "Failed to get saved goods" });
+    }
+});
+
+
+
+
+app.delete('/remove-saved-good/:saved_id', verifyToken, async (req, res) => {
+    const savedId = req.params.saved_id;
+    const user = req.user;
+
+    console.log("DELETE REQ PARAM:", savedId);
+    console.log("TOKEN USER:", user);
+
+    try {
+        const deletedCount = await db('saved_goods')
+            .where({ saved_id: savedId, buyer_user_id: user.user_id })
+            .del();
+
+        if (deletedCount === 0) {
+            return res.status(404).json({ error: "Saved good not found or not yours" });
+        }
+
+        res.json({ message: "Saved good removed successfully", saved_id: savedId });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Failed to remove saved good" });
+    }
+});
+
+
+/**
+ * Normalize strings for comparison
+ */
+function normalize(s = '') {
+  return String(s || '')
+    .toLowerCase()
+    .replace(/[^\w\s]/gi, '') // remove punctuation
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Check whether candidateName matches one of expected names (fuzzy, normalized)
+ */
+function matches(expected, candidate) {
+  if (!candidate) return false;
+  const e = normalize(expected);
+  const c = normalize(candidate);
+  if (!e || !c) return false;
+  // exact normalized match OR candidate contains expected OR expected contains candidate
+  return c === e || c.includes(e) || e.includes(c);
+}
+
+
 
 app.listen(3000, (req, res) => {
     console.log('listening on port 3000.......')
