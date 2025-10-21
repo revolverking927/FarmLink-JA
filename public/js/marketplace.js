@@ -17,14 +17,14 @@ const source = document.querySelector('#post-template').innerHTML;
     navBar_role(navigationLinks, user);
     
     fetch('/get-posts', {
-        method: 'post',
+        method: 'get',
         headers: new Headers({ 
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + token //sends the token for the current user 
         }),
-        body: JSON.stringify({
-            pageNumber: pageNum
-        })
+        // body: JSON.stringify({
+        //     pageNumber: pageNum
+        // })
     })
     .then(res => res.json())
     .then(data => {

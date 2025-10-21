@@ -1,0 +1,232 @@
+/* Header container */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #2e7d32; /* deep green */
+  padding: 12px 40px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* Logo / site name */
+#logo {
+  color: #fff;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#logo:hover {
+  transform: scale(1.05);
+}
+
+/* Navigation bar */
+#nav_bar ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-li-item {
+  margin-left: 25px;
+}
+
+.nav-li-item a {
+  color: #f0f0f0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+/* Hover underline animation */
+.nav-li-item a::after {
+  content: "";
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  left: 0;
+  bottom: -4px;
+  background-color: #fff;
+  transition: width 0.3s ease;
+}
+
+.nav-li-item a:hover::after {
+  width: 100%;
+}
+
+.nav-li-item a:hover {
+  color: #ffffff;
+}
+
+/* Mobile-friendly tweaks */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 15px 20px;
+  }
+
+  #nav_bar ul {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .nav-li-item {
+    margin: 10px 0;
+  }
+}
+
+/* === General Reset & Basics === */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #f6f7f9;
+  color: #333;
+  line-height: 1.5;
+}
+
+/* ROLE SELECTION */
+.title {
+    text-align: center;
+}
+
+#roles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.role-container {
+    width: 40%;
+    max-width: 300px;
+    min-width: 250px;
+    background-color: #fff8ef;
+    border: 2px solid #e6d5b8;
+    border-radius: 15px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+    /* transition: transform 0.3s ease; */
+}
+
+/* .role-container:hover {
+    transform: scale(1.03);
+} */
+
+.role-headings, .role-container h4 {
+    margin-bottom: 15px;
+    color: #2c2c2c;
+}
+
+/* ROLE BUTTONS */
+.role-btn {
+    padding: 10px 20px;
+    background-color: bisque;
+    border: 2px solid beige;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.3 ease;
+}
+
+.role-btn:hover {
+    background-color: #fdd19e;
+    transform: scale(1.03);
+}
+
+/* REGISTER FORM */
+.register-form {
+    width: 70%;
+    max-width: 600px;
+    margin: 30px auto;
+    background-color: #fffaf2;
+    border: 2px solid #f0dfc2;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register-form h1 {
+    font-size: 2em;
+    color: #3a2a17;
+    margin-bottom: 10px;
+}
+
+.register-form h3 {
+    color: #5a4634;
+    font-weight: normal;
+    margin-bottom: 25px;
+}
+
+/* INPUT FIELDS */
+.input {
+    width: 80%;
+    max-width: 400px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1.5px solid #e0c6a3;
+    border-radius: 8px;
+    background-color: #fffaf2;
+    font-size: 1em;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.input:focus {
+    border-color: #c49b66;
+    outline: none;
+    background-color: #fff8ed;
+}
+
+/* SUBMIT BUTTON */
+#submit-btn {
+    background-color: bisque;
+    border: 2px solid beige;
+    border-radius: 10px;
+    padding: 10px 30px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#submit-btn:hover {
+    background-color: #ffe0b8;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    #roles {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .role-container {
+        width: 80%;
+    }
+
+    .register-form {
+        width: 90%;
+    }
+}

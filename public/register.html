@@ -7,7 +7,7 @@
         <title>Farm Link JA</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
+        <link rel="stylesheet" href="./styles/register.css">
         <link rel="stylesheet" href="./styles/alert.css">
     </head>
     <body>
@@ -25,30 +25,39 @@
                 <h3 class="alert-message">Alert</h3>
             </div>
             <div>
-                <h2>Choose Role</h2>
+                <h2 class="title">Choose Role</h2>
                 <div id="roles">
                     <div class="role-container" id="farmer-role">
                         <h4>Select Farmer Role</h4>
-                        <button type="button" href="#" id="farmer-btn">Farmer Register</button>
+                        <button class="role-btn" type="button" href="#" id="farmer-btn">Farmer Register</button>
                     </div>
                     <div class="role-container" id="buyer-role">
                         <h4>Select Buyer Role</h4>
-                        <button type="button" href="#" id="buyer-btn">Buyer Register</button>
+                        <button class="role-btn" type="button" href="#" id="buyer-btn">Buyer Register</button>
                     </div>
                 </div>
             </div>
-            <form class="register-form" id="farmer-register-form">
+            <form class="register-form">
                 <h1>Register</h1>
                 <h3>Create an account</h3>
 
-                <input type="text" placeholder="First Name" class="input" id="first-name" name="name" required/>
+                <input type="text" placeholder="First Name (required)" class="input" id="first-name" name="name" required/>
                 <br/>
-                <input type="text" placeholder="Last Name" class="input" id="last-name" name="name" required/>
+                <input type="text" placeholder="Last Name (required)" class="input" id="last-name" name="name" required/>
                 <br/>
-                <input type="email" placeholder="Email" class="input" id="email" name="email" required/>
+                <input type="email" placeholder="Email (required)" class="input" id="email" name="email" required/>
                 <br/>
-                <select title="parish" class="input" id="parish" name="parish"  required>
-                    <option value="" disabled selected>-- Choose a Parish --</option>
+                <input type="password" placeholder="Password (required)" class="input" id="password" name="password" required/>
+                <br/>
+                
+                <input type="text" placeholder="Street (required)" class="input" id="street" required>
+                <br />
+                <!-- <input type="text" placeholder="Address2" class="input" id="address2">
+                <br /> -->
+                <input type="text" placeholder="City/Town (optional)" class="input" id="city_town">
+                <br />
+                <select title="parish" class="input" id="parish" name="parish" >
+                    <option value="" disabled selected>-- Choose a Parish -- (optional)</option>
                     <option value="kingston">Kingston</option>
                     <option value="saint-andrew">Saint Andrew</option>
                     <option value="saint-catherine">Saint Catherine</option>
@@ -64,14 +73,12 @@
                     <option value="portland">Portland</option>
                     <option value="saint-thomas">Saint Thomas</option>
                 </select>
-                <br/> 
-                <input type="password" placeholder="Password" class="input" id="password" name="password" required/>
                 <br/>
                 <input type="image" title="Upload Food Handler's License" class="input" id="food-handlers-license" name="food-handlers-license" accept="image\*" required/>
-                <br/>
+                
                 <button type="button" id="submit-btn">register</button>
-            </form>
 
+            </form>
         </main>
         <script src="./js/user-form.js"></script>
     </body>
